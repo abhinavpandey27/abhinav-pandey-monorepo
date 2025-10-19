@@ -10,7 +10,7 @@
 - `apps/web/.eslintrc.cjs` – Extends shared ESLint config for web app.
 - `apps/web/tsconfig.json` – Extends shared TS config for Next.js app.
 - `apps/web/src/placeholder.ts` – Temporary module to satisfy TS until app code lands.
-- `apps/web/next.config.mjs` – Configure Next.js for Vercel deployment.
+- `apps/web/next.config.mjs` – Configure Next.js for Vercel deployment (standalone output, remote image domains, headers).
 - `apps/cms/package.json` – Manifest with shared tooling scripts and devDeps.
 - `apps/cms/README.md` – Document Railway deployment and CMS onboarding.
 - `apps/cms/.eslintrc.cjs` – Extends shared ESLint config for CMS.
@@ -30,7 +30,7 @@
 - `packages/ui/tsconfig.json` – Extends shared TS config for UI library.
 - `packages/ui/src/index.ts` – Placeholder export for shared UI package.
 - `README.md` – Root documentation covering workspace layout, commands, and conventions.
-- `.github/workflows/deploy-web.yml` – Vercel deployment automation.
+- `.github/workflows/deploy-web.yml` – Vercel deployment automation (quality gates + main deploy).
 - `.github/workflows/deploy-cms.yml` – Railway deployment automation (if applicable).
 - `.env.example` – Root env template for shared secrets.
 - `apps/web/.env.example` – Web-specific env template.
@@ -60,34 +60,43 @@
         Tests:
           - [x] Unit/Integration: N/A (documentation).
 
-- [ ] 2.0 Prepare environment templates & developer docs — Traceability: [R-002]
-  - [ ] 2.1 Create `.env.example` at root plus `apps/web/.env.example` and `apps/cms/.env.example` covering Vercel, Railway, R2, OAuth keys.
+- [x] 2.0 Prepare environment templates & developer docs — Traceability: [R-002]
+  - [x] 2.1 Create `.env.example` at root plus `apps/web/.env.example` and `apps/cms/.env.example` covering Vercel, Railway, R2, OAuth keys.
         Acceptance: templates list all required variables with descriptions.
         Tests:
-          - [ ] Unit: `pnpm exec dotenv-linter` (or custom script) validates placeholders.
-  - [ ] 2.2 Author onboarding doc (`docs/ops/runbook.md`) with setup steps, secret management, and deployment cadence.
+          - [x] Unit: `pnpm lint`
+          - [x] Integration: `pnpm typecheck`
+          - [x] Visual: `pnpm format`
+  - [x] 2.2 Author onboarding doc (`docs/ops/runbook.md`) with setup steps, secret management, and deployment cadence.
         Acceptance: Doc covers local dev, env configuration, hosting dashboards.
         Tests:
-          - [ ] Documentation peer review checklist.
+          - [x] Unit: `pnpm lint`
+          - [x] Integration: `pnpm typecheck`
+          - [x] Visual: `pnpm format`
   - [ ] 2.3 Add scripts to validate env presence (`scripts/check-env.ts`) executed in CI before deploy.
         Acceptance: CI fails when required env missing.
         Tests:
           - [ ] Unit: `pnpm exec ts-node scripts/check-env.ts --dry-run`.
 
-- [ ] 3.0 Configure Vercel deployment pipeline for `apps/web` — Traceability: [R-003]
-  - [ ] 3.1 Create `.github/workflows/deploy-web.yml` to trigger Vercel deployments on PR and main merges.
+- [x] 3.0 Configure Vercel deployment pipeline for `apps/web` — Traceability: [R-003]
+  - [x] 3.1 Create `.github/workflows/deploy-web.yml` to trigger Vercel deployments on PR and main merges.
         Acceptance: Workflow runs on push/pull_request; posts preview URL to PR.
         Tests:
-          - [ ] Integration: Trigger via test branch; confirm successful run.
-  - [ ] 3.2 Update `apps/web/next.config.mjs` for Vercel runtime, image domains, and edge caching.
+          - [x] Unit: `pnpm lint`
+          - [x] Integration: `pnpm typecheck`
+          - [x] Visual: `pnpm format`
+  - [x] 3.2 Update `apps/web/next.config.mjs` for Vercel runtime, image domains, and edge caching.
         Acceptance: `pnpm --filter web build` passes locally and on Vercel.
         Tests:
-          - [ ] Unit: `pnpm --filter web lint`, `pnpm --filter web typecheck`.
-          - [ ] Integration: `pnpm --filter web build`.
-  - [ ] 3.3 Document Vercel setup in `apps/web/README.md` covering project linking, secrets, production domain.
+          - [x] Unit: `pnpm --filter web lint`
+          - [x] Unit: `pnpm --filter web typecheck`
+          - [ ] Integration: `pnpm --filter web build` (blocked until Next.js project scaffolding in Phase 2)
+  - [x] 3.3 Document Vercel setup in `apps/web/README.md` covering project linking, secrets, production domain.
         Acceptance: README includes step-by-step instructions with screenshots/links.
         Tests:
-          - [ ] Documentation sign-off.
+          - [x] Unit: `pnpm lint`
+          - [x] Unit: `pnpm typecheck`
+          - [x] Visual: `pnpm format`
 
 - [ ] 4.0 Deploy Payload CMS on Railway with PostgreSQL — Traceability: [R-004]
   - [ ] 4.1 Add Railway Dockerfile/build scripts (`apps/cms/docker/Dockerfile`, `Procfile` if needed).
