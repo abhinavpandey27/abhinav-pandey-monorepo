@@ -11,7 +11,15 @@ module.exports = {
     node: true,
   },
   settings: {
-    'import/core-modules': ['payload/types'],
+    'import/core-modules': ['payload', 'payload/types'],
+    'import/resolver': {
+      node: {
+        extensions: ['.js', '.ts', '.tsx'],
+      },
+      typescript: {
+        project: './tsconfig.json',
+      },
+    },
   },
   rules: {
     'import/namespace': 'off',

@@ -26,6 +26,7 @@ Copy `apps/cms/.env.example` to `apps/cms/.env` and populate:
 - `PAYLOAD_SECRET` – random string for JWT/session encryption.
 - `SERVER_URL` – public URL of the CMS (e.g., Railway domain).
 - R2 + OAuth keys (see `.env.example` for the full list).
+- Local auth controls (`AUTH_PASSWORD_MIN_LENGTH`, `AUTH_MAX_LOGIN_ATTEMPTS`, `AUTH_LOCK_TIME`, `AUTH_TOKEN_EXPIRATION`, `AUTH_ENABLE_EMAIL_VERIFICATION`) tune password policy and session behaviour.
 
 For local development you can run PostgreSQL via Docker:
 

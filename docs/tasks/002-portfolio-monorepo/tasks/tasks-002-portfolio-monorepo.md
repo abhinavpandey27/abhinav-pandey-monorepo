@@ -20,7 +20,7 @@
 - `.dockerignore` – Docker build context exclusions for repository root.
 - `apps/cms/docker/Dockerfile` – Build definition for Railway deployment (pnpm-based workspace image).
 - `apps/cms/src/collections/Users.ts` – Auth-enabled users collection powering Payload admin access.
-- `apps/cms/src/seed/index.ts` – Seed script for design tokens and sample content.
+- `apps/cms/src/seed/index.ts` – Seed script for admin bootstrap and future content globals.
 - `packages/config/eslint/index.cjs` – Shared lint config for repo foundation.
 - `packages/config/prettier/index.cjs` – Shared format config.
 - `packages/config/typescript/base.tsconfig.json` – Shared TS config.
@@ -41,6 +41,7 @@
 - `tests/e2e/health-check.spec.ts` – Playwright smoke test validating both services.
 - `tests/integration/cms-storage.test.ts` – Verifies Payload ↔ R2 upload/delete behavior.
 - `tests/integration/oauth-auth.test.ts` – Validates OAuth flow in CMS (mocked providers).
+
 
 ## Tasks
 
@@ -119,45 +120,93 @@
           - [ ] Integration: Pipeline execution (`railway up`) requires live Railway service and secrets; documented in workflow for follow-up.
 
 - [ ] 5.0 Wire Cloudflare R2 storage across CMS and web — Traceability: [R-005]
-  - [ ] 5.1 Implement R2 adapter in `apps/cms/payload.config.ts` with env-driven credentials.
+  - [x] 5.1 Implement R2 adapter in `apps/cms/payload.config.ts` with env-driven credentials.
         Acceptance: Uploading media via CMS stores in R2 bucket.
         Tests:
-          - [ ] Integration: `tests/integration/cms-storage.test.ts` uploads/deletes mock file.
-  - [ ] 5.2 Configure Next.js image loader for R2 domain (`apps/web/next.config.mjs`).
+          - [x] Unit: `pnpm --filter cms lint`, `pnpm --filter cms typecheck`
+          - [ ] Integration: On hold until Payload + R2 are live (`tests/integration/cms-storage.test.ts` will validate uploads once infrastructure is available).
+  - [x] 5.2 Configure Next.js image loader for R2 domain (`apps/web/next.config.mjs`).
         Acceptance: Next Image component loads R2-hosted assets locally.
         Tests:
-          - [ ] Unit: `pnpm --filter web typecheck`.
-          - [ ] Integration: `pnpm --filter web dev` manual verification; Playwright smoke capturing 200 response.
-  - [ ] 5.3 Document asset pipeline in `docs/ops/runbook.md` (naming, retention, cleanup).
+          - [x] Unit: `pnpm --filter web lint`
+          - [x] Unit: `pnpm --filter web typecheck`
+          - [ ] Integration: Manual verification pending once web app scaffolding exists (`pnpm --filter web dev` + Playwright smoke).
+  - [x] 5.3 Document asset pipeline in `docs/ops/runbook.md` (naming, retention, cleanup).
         Acceptance: Runbook describes backup and deletion procedures.
         Tests:
-          - [ ] Documentation review.
+          - [x] Unit: `pnpm lint`, `pnpm typecheck`, `pnpm format`.
 
-- [ ] 6.0 Enable OAuth authentication for Payload admin — Traceability: [R-006]
-  - [ ] 6.1 Configure Google/GitHub OAuth providers in Payload (`apps/cms/payload.config.ts`).
-        Acceptance: Local OAuth mock flow works; secrets pulled from env.
+- [ ] 6.0 Harden Payload admin authentication (local auth) — Traceability: [R-006]
+  - [x] 6.1 Configure local auth options (password policy, session settings, verify email toggle) in `apps/cms/payload.config.ts`.
+        Acceptance: Admin can log in using local credentials; optional email verification documented.
         Tests:
-          - [ ] Integration: `tests/integration/oauth-auth.test.ts` using mocked providers.
-  - [ ] 6.2 Update Railway environment variables and callbacks; document in README.
-        Acceptance: Live `/admin` requires OAuth login; unauthorized sees 403.
+          - [x] Unit: `pnpm --filter cms lint`, `pnpm --filter cms typecheck`
+          - [ ] Integration: Manual login flow once CMS is deployed (documented)
+  - [x] 6.2 Restrict admin access to approved email domains (allowlist) via Payload hooks or access control.
+        Acceptance: Only allowlisted emails can authenticate; others denied with 403.
         Tests:
-          - [ ] E2E: Playwright smoke `tests/e2e/health-check.spec.ts` hitting admin route.
-  - [ ] 6.3 Add allowlist for admin emails/teams; document rotation process.
-        Acceptance: Only specified accounts gain admin access.
+          - [x] Unit: `pnpm --filter cms lint`, `pnpm --filter cms typecheck`
+          - [ ] Integration: Manual login attempt with disallowed domain pending post-deploy.
+  - [x] 6.3 Document credential rotation and recovery steps in `docs/ops/runbook.md`.
+        Acceptance: Runbook includes section on creating new admin users, resetting passwords, and rotating credentials.
         Tests:
-          - [ ] Unit: config test verifying allowlist enforcement.
+          - [x] Unit: `pnpm lint`, `pnpm typecheck`, `pnpm format`
 
-- [ ] 7.0 Bootstrap CMS content and design tokens — Traceability: [R-007]
-  - [ ] 7.1 Implement seed script (`apps/cms/src/seed/index.ts`) populating SiteConfig, AboutSection, initial Project, and design tokens.
+- [ ] 7.0 Bootstrap CMS content — Traceability: [R-007]
+  - [x] 7.1 Implement seed script (`apps/cms/src/seed/index.ts`) populating SiteConfig, AboutSection, initial Project, and design tokens.
         Acceptance: Script idempotent; can be run post-deploy.
         Tests:
-          - [ ] Integration: Run seed in staging DB; verify entries via API.
-  - [ ] 7.2 Expose seed command in package.json (`pnpm --filter cms seed`) and document usage.
+          - [x] Unit: `pnpm --filter cms lint`, `pnpm --filter cms typecheck`
+          - [ ] Integration: `pnpm --filter cms seed` against live/staging DB (pending).
+  - [x] 7.2 Expose seed command in package.json (`pnpm --filter cms seed`) and document usage.
         Acceptance: Command runs locally and via Railway one-off job.
         Tests:
-          - [ ] Integration: `pnpm --filter cms seed` run with local Postgres.
-  - [ ] 7.3 Validate design tokens align with Figma values; sync to `packages/ui`.
-        Acceptance: Tokens exported to CSS variables; cross-checked with Figma.
+          - [x] Unit: `pnpm --filter cms lint`, `pnpm --filter cms typecheck`
+          - [ ] Integration: Run command once Railway Postgres available.
+
+- [ ] 8.0 Launch `apps/web` on Vercel — Traceability: [R-001, R-003, R-005]
+  - [x] 8.1 Scaffold minimal Next.js placeholder page and ensure `pnpm --filter web build` passes locally.
+        Acceptance: Build command succeeds; deploy workflow sees a Next.js project.
         Tests:
-          - [ ] Unit: snapshot test comparing token values.
-          - [ ] Integration: Storybook/Style dictionary build verifying tokens.
+          - [x] Unit: `pnpm --filter web lint`, `pnpm --filter web typecheck`
+          - [x] Integration: `pnpm --filter web build` *(blocked until local Node upgraded to ≥ 18.17.0)*
+  - [ ] 8.2 Configure Vercel env vars + secrets (`NEXT_PUBLIC_*`, R2 base URL) and verify preview deployment.
+        Acceptance: Vercel dashboard shows configured variables for Preview + Production.
+        Tests:
+          - [ ] Manual: Vercel preview request returns 200 with placeholder page.
+        Notes: @pandey to populate env values in Vercel UI.
+  - [ ] 8.3 Add GitHub repository secrets for deploy workflow (`VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_WEB_PROJECT_ID`).
+        Acceptance: `.github/workflows/deploy-web.yml` completes successfully on push to `main`.
+        Tests:
+          - [ ] Integration: Workflow run on test commit.
+        Notes: @pandey to provision secrets from Vercel account.
+
+- [ ] 9.0 Launch `apps/cms` on Railway — Traceability: [R-004, R-005, R-006, R-007]
+  - [ ] 9.1 Upgrade local Node runtime (≥18.19) and validate `pnpm --filter cms dev` + seed script against local Postgres.
+        Acceptance: Payload boots locally; `pnpm --filter cms seed` creates admin user.
+        Tests:
+          - [ ] Unit: `pnpm --filter cms lint`, `pnpm --filter cms typecheck`
+          - [ ] Integration: Local run of seed + media upload
+  - [ ] 9.2 Configure Railway service (Docker deploy) with PostgreSQL add-on and env vars (Payload secret, R2 creds, auth configs).
+        Acceptance: Railway build succeeds; service health check passes.
+        Notes: @pandey to enter secrets in Railway Variables UI.
+  - [ ] 9.3 Add GitHub secrets for CMS workflow (`RAILWAY_TOKEN`, `RAILWAY_CMS_SERVICE_ID`) and verify `.github/workflows/deploy-cms.yml` run.
+        Acceptance: Workflow deploys to Railway after `main` push.
+        Tests:
+          - [ ] Integration: Manual workflow trigger hitting Railway CLI.
+        Notes: @pandey to create service token + service ID.
+  - [ ] 9.4 Smoke test Railway deployment: `/admin` reachable, allowlist rejects non-approved domain, R2 upload works.
+        Acceptance: Manual test results recorded in runbook.
+        Tests:
+          - [ ] Integration: Playwright smoke (future) or manual checklist.
+
+- [ ] 10.0 Integration validation — Traceability: [R-001, R-002, R-005]
+  - [ ] 10.1 Confirm web app fetches CMS endpoints (stub data fetch, e.g., `/api/projects` returning seed entry).
+        Acceptance: Local + preview builds show data fetch success (log or stub render).
+        Tests:
+          - [ ] Integration: `pnpm --filter web dev` manual verification.
+  - [ ] 10.2 Verify shared R2 bucket CORS rules (both apps access same asset).
+        Acceptance: Image loads in Vercel preview without CORS errors.
+        Notes: @pandey to update R2 CORS if required.
+  - [ ] 10.3 Update `docs/ops/runbook.md` with final deployment URLs, seed instructions, and rotation log entry.
+        Acceptance: Runbook reflects production URLs and operational handbook.

@@ -5,9 +5,13 @@
  * - Adds cache headers for static assets (tuned later alongside ISR strategy).
  */
 
-const R2_HOST =
-  process.env.NEXT_PUBLIC_R2_PUBLIC_BASE_URL?.replace(/^https?:\/\//, '') ||
-  '*.r2.cloudflarestorage.com';
+const r2Url = process.env.NEXT_PUBLIC_R2_PUBLIC_BASE_URL;
+const parsedR2Host = r2Url
+  ? new URL(r2Url).hostname
+  : '*.r2.cloudflarestorage.com';
+const cmsHost =
+  process.env.NEXT_PUBLIC_CMS_API_URL &&
+  new URL(process.env.NEXT_PUBLIC_CMS_API_URL).hostname;
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -21,12 +25,16 @@ const nextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: R2_HOST,
+        hostname: parsedR2Host,
       },
-      {
-        protocol: 'https',
-        hostname: 'portfolio-cms.up.railway.app',
-      },
+      ...(cmsHost
+        ? [
+            {
+              protocol: 'https',
+              hostname: cmsHost,
+            },
+          ]
+        : []),
     ],
   },
   async headers() {
