@@ -1,0 +1,11 @@
+.git
+node_modules
+pnpm-store
+.vercel
+.env
+.env.local
+apps/**/node_modules
+packages/**/node_modules
+dist
+.next
+*.log

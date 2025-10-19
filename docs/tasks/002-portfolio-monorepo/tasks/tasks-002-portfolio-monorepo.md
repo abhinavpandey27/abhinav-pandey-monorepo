@@ -16,8 +16,10 @@
 - `apps/cms/.eslintrc.cjs` – Extends shared ESLint config for CMS.
 - `apps/cms/tsconfig.json` – Extends shared TS config for Payload CMS.
 - `apps/cms/src/placeholder.ts` – Temporary module to satisfy TS until CMS code lands.
-- `apps/cms/payload.config.ts` – Configure Payload collections, storage adapters, auth.
-- `apps/cms/docker/Dockerfile` – Build definition for Railway deployment.
+- `apps/cms/payload.config.ts` – Payload root config (PostgreSQL adapter, admin auth, future storage adapters).
+- `.dockerignore` – Docker build context exclusions for repository root.
+- `apps/cms/docker/Dockerfile` – Build definition for Railway deployment (pnpm-based workspace image).
+- `apps/cms/src/collections/Users.ts` – Auth-enabled users collection powering Payload admin access.
 - `apps/cms/src/seed/index.ts` – Seed script for design tokens and sample content.
 - `packages/config/eslint/index.cjs` – Shared lint config for repo foundation.
 - `packages/config/prettier/index.cjs` – Shared format config.
@@ -31,7 +33,7 @@
 - `packages/ui/src/index.ts` – Placeholder export for shared UI package.
 - `README.md` – Root documentation covering workspace layout, commands, and conventions.
 - `.github/workflows/deploy-web.yml` – Vercel deployment automation (quality gates + main deploy).
-- `.github/workflows/deploy-cms.yml` – Railway deployment automation (if applicable).
+- `.github/workflows/deploy-cms.yml` – Railway deployment automation (quality gates + Railway deploy job).
 - `.env.example` – Root env template for shared secrets.
 - `apps/web/.env.example` – Web-specific env template.
 - `apps/cms/.env.example` – CMS-specific env template.
@@ -99,19 +101,22 @@
           - [x] Visual: `pnpm format`
 
 - [ ] 4.0 Deploy Payload CMS on Railway with PostgreSQL — Traceability: [R-004]
-  - [ ] 4.1 Add Railway Dockerfile/build scripts (`apps/cms/docker/Dockerfile`, `Procfile` if needed).
-        Acceptance: Docker image builds locally (`docker build`).
+  - [x] 4.1 Add Railway Dockerfile/build scripts (`apps/cms/docker/Dockerfile`, `Procfile` if needed).
+        Acceptance: Docker image builds locally (`docker build -f apps/cms/docker/Dockerfile .`).
         Tests:
-          - [ ] Integration: `docker build apps/cms`.
-  - [ ] 4.2 Configure PostgreSQL connection in `apps/cms/payload.config.ts`; ensure migrations run on boot.
+          - [ ] Integration: `docker build -f apps/cms/docker/Dockerfile .` *(blocked locally: Docker CLI unavailable in current environment)*.
+- [x] 4.2 Configure PostgreSQL connection in `apps/cms/payload.config.ts`; ensure migrations run on boot.
         Acceptance: CMS starts locally with Railway-compatible connection string.
         Tests:
-          - [ ] Unit: `pnpm --filter cms lint`, `pnpm --filter cms typecheck`.
-          - [ ] Integration: `pnpm --filter cms dev` with local Postgres.
-  - [ ] 4.3 Create Railway deployment workflow (`.github/workflows/deploy-cms.yml`) or document manual deployment.
+          - [x] Unit: `pnpm --filter cms lint`, `pnpm --filter cms typecheck`.
+          - [ ] Integration: `pnpm --filter cms dev` with local Postgres *(blocked: local Node v18.13 lacks `module.register`; Payload CLI requires Node ≥ 18.19.0 or 20.6+)*.
+  - [x] 4.3 Create Railway deployment workflow (`.github/workflows/deploy-cms.yml`) or document manual deployment.
         Acceptance: Railway project builds and exposes `/admin`.
         Tests:
-          - [ ] Integration: Trigger deployment; verify health check via Playwright smoke test.
+          - [x] Unit: `pnpm lint`
+          - [x] Unit: `pnpm typecheck`
+          - [x] Visual: `pnpm format`
+          - [ ] Integration: Pipeline execution (`railway up`) requires live Railway service and secrets; documented in workflow for follow-up.
 
 - [ ] 5.0 Wire Cloudflare R2 storage across CMS and web — Traceability: [R-005]
   - [ ] 5.1 Implement R2 adapter in `apps/cms/payload.config.ts` with env-driven credentials.

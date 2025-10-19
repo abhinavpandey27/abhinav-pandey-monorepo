@@ -1,4 +1,4 @@
-name: Deploy Web (Vercel)
+name: Deploy CMS (Railway)
 
 on:
   push:
@@ -6,16 +6,16 @@ on:
       - main
   pull_request:
     paths:
-      - "apps/web/**"
+      - "apps/cms/**"
       - "packages/ui/**"
       - "packages/config/**"
       - "package.json"
       - "pnpm-lock.yaml"
-      - ".github/workflows/deploy-web.yml"
+      - ".github/workflows/deploy-cms.yml"
 
 jobs:
   quality-checks:
-    name: Quality Checks (web)
+    name: Quality Checks (cms)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -29,26 +29,29 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: "pnpm"
+          node-version: 20
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
       - name: Lint
-        run: pnpm --filter web lint
+        run: pnpm --filter cms lint
 
       - name: Typecheck
-        run: pnpm --filter web typecheck
+        run: pnpm --filter cms typecheck
 
       - name: Format check
-        run: pnpm --filter web format
+        run: pnpm --filter cms format
 
   deploy:
-    name: Deploy to Vercel
+    name: Deploy to Railway
     needs: quality-checks
     runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
+    env:
+      RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+      RAILWAY_SERVICE_ID: ${{ secrets.RAILWAY_CMS_SERVICE_ID }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -61,17 +64,16 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
-          node-version: 18
-          cache: "pnpm"
+          node-version: 20
+          cache: pnpm
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Vercel Deploy
-        uses: amondnet/vercel-action@v25
-        with:
-          vercel-token: ${{ secrets.VERCEL_TOKEN }}
-          vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
-          vercel-project-id: prj_Zri43V05oTwY6CJ1Wdb89lQyJwmL
-          working-directory: apps/web
-          vercel-args: "--prod"
+      - name: Install Railway CLI
+        run: curl -fsSL https://railway.app/install.sh | sh
+
+      - name: Deploy service
+        run: |
+          railway login --service-token "$RAILWAY_TOKEN"
+          railway up --service "$RAILWAY_SERVICE_ID" --ci
