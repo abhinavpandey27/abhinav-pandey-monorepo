@@ -175,11 +175,6 @@
         Tests:
           - [ ] Manual: Vercel preview request returns 200 with placeholder page.
         Notes: @pandey to populate env values in Vercel UI.
-  - [ ] 8.3 Add GitHub repository secrets for deploy workflow (`VERCEL_TOKEN`, `VERCEL_ORG_ID`, `VERCEL_WEB_PROJECT_ID`).
-        Acceptance: `.github/workflows/deploy-web.yml` completes successfully on push to `main`.
-        Tests:
-          - [ ] Integration: Workflow run on test commit.
-        Notes: @pandey to provision secrets from Vercel account.
 
 - [ ] 9.0 Launch `apps/cms` on Railway — Traceability: [R-004, R-005, R-006, R-007]
   - [ ] 9.1 Upgrade local Node runtime (≥18.19) and validate `pnpm --filter cms dev` + seed script against local Postgres.

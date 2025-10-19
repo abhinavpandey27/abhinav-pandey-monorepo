@@ -14,6 +14,9 @@
     "typecheck": "pnpm -r run typecheck",
     "format": "pnpm -r run format"
   },
+  "engines": {
+    "node": ">=18.17.0"
+  },
   "devDependencies": {
     "@portfolio/config": "workspace:*",
     "@types/node": "20.11.20",

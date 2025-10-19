@@ -76,7 +76,8 @@ Refer to:
 4. Deploy from repo:
    - Option A: Railway GitHub integration (auto deploy on `main`).
    - Option B: Manual `railway up` with CLI.
-5. After deploy, verify `/admin` loads and prompts for OAuth login.
+5. After deploy, verify `/admin` loads and you can authenticate with an allowlisted email (use seed command if no admins exist).
+6. From the Railway dashboard run a one-off command `pnpm --filter cms seed` with production env vars to create the initial admin.
 
 ### Smoke Tests
 
@@ -95,12 +96,21 @@ Future iterations will add automated Playwright smoke tests.
 ## 4. Local Development Workflow
 
 1. Install dependencies: `pnpm install`
-2. Copy env templates and fill local values (see §2).
-3. Run linters/typecheck before committing: `pnpm lint`, `pnpm typecheck`, `pnpm format`
-4. Start dev servers (placeholder commands until apps are implemented):
+2. Ensure Node.js ≥18.17.0 (repository ships with `.nvmrc` → `nvm install && nvm use`).
+3. Copy env templates and fill local values (see §2).
+4. Run linters/typecheck before committing: `pnpm lint`, `pnpm typecheck`, `pnpm format`
+5. Start dev servers (placeholder commands until apps are implemented):
    - `pnpm --filter web dev`
    - `pnpm --filter cms dev`
-5. Follow task list in `docs/tasks/002-portfolio-monorepo/tasks/tasks-002-portfolio-monorepo.md`; update per `docs/ai-dev/process-task-list.md`.
+6. Follow task list in `docs/tasks/002-portfolio-monorepo/tasks/tasks-002-portfolio-monorepo.md`; update per `docs/ai-dev/process-task-list.md`.
+
+### Local CMS Smoke Test
+
+1. Start Postgres locally (example): `docker run --rm --name portfolio-cms-db -e POSTGRES_PASSWORD=postgres -e POSTGRES_DB=portfolio_cms -p 5432:5432 -d postgres:16`.
+2. Copy env: `cp apps/cms/.env.example apps/cms/.env` and set `DATABASE_URL=postgres://postgres:postgres@localhost:5432/portfolio_cms`.
+3. `pnpm --filter cms dev` to launch Payload (requires Node ≥18.19; recommended Node 20.11 via `.nvmrc`).
+4. In another terminal run `pnpm --filter cms seed` to bootstrap the admin user/account.
+5. Visit `http://localhost:3000/admin` and log in with the seeded credentials to confirm allowlist/password policy.
 
 ---
 
