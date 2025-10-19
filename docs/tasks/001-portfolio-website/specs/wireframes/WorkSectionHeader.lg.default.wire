@@ -1,0 +1,63 @@
+# Wireframe: WorkSectionHeader (lg, default)
+# Traceability: R-007, R-008
+# Tokens: space-24, space-32, font-size-h4 (28px), color-label-secondary (dark mode), radius-3
+# Notes: 12-column grid layout, dark background sections
+
++--------------------------------------------------------------------------------+
+| [Dark Background: #090e03 or project-specific color]                         |
+| [Grid: 12 columns, gap: 32px, padding: 24px]                                 |
+|                                                                                |
+| ┌───────────────────────────────┐  ┌──────────────────┐  ┌─────────────────┐|
+| │ [Grid: col 1-5]               │  │ [Grid: col 6-9]  │  │ [Grid: col 10-12]│
+| │                                │  │                  │  │                  │|
+| │  ┌──┐  Striker                │  │ TEAM             │  │ OUTCOME          │|
+| │  │64│  NFT-based Cricket       │  │ [14px/Geist/60%]│  │ [14px/Geist/30%]│|
+| │  │px│  Fantasy Game            │  │                  │  │                  │|
+| │  └──┘  [28px/SemiBold/60%]    │  │ 2 Designers,     │  │ • 25K Daily      │|
+| │  [Icon: 12.8px radius]        │  │ 2 PMs, 1 Program │  │   Active Users   │|
+| │  [16px gap to text]           │  │ Manager, ...     │  │   [28px/SemiBold]│|
+| │                                │  │ [16px/Medium]    │  │                  │|
+| │  Did 0→1 for a new player-    │  │                  │  │ • 1 Million USD  │|
+| │  card-based fantasy system... │  │ ────────────────  │  │   Traded Volume  │|
+| │  [16px/Medium/#ffffff]        │  │ CATEGORY         │  │   [28px/SemiBold]│|
+| │  [470px max-width]            │  │ [14px/Geist/60%]│  │                  │|
+| │                                │  │                  │  │                  │|
+| │  ┌─────────────────┐          │  │ [Real Money...] │  │                  │|
+| │  │ BUTTON      →   │          │  │ [Fantasy Sports]│  │                  │|
+| │  │ [White bg/black]│          │  │ [Web3] [NFT]    │  │                  │|
+| │  └─────────────────┘          │  │ [Chips: 8px     │  │                  │|
+| │  [32px pill radius]           │  │  radius, wrap]  │  │                  │|
+| │                                │  │                  │  │                  │|
+| │                                │  │ ────────────────  │  │                  │|
+| │                                │  │ ROLE             │  │                  │|
+| │                                │  │ Product Designer │  │                  │|
+| │                                │  │ II               │  │                  │|
+| │                                │  │                  │  │                  │|
+| │                                │  │ ────────────────  │  │                  │|
+| │                                │  │ TIMELINE         │  │                  │|
+| │                                │  │ Q2 2022 - Q4 2022│  │                  │|
+| └───────────────────────────────┘  └──────────────────┘  └─────────────────┘|
+|                                                                                |
+| [Below: Image Carousel - see Carousel.lg.default.wire]                       |
+|                                                                                |
++--------------------------------------------------------------------------------+
+
+Grid Layout:
+- Columns 1-5: Project intro (icon, title, description, CTA)
+- Columns 6-9: Metadata (team, category chips, role, timeline)
+- Columns 10-12: Outcomes (bulleted list)
+
+Separator Lines:
+- Border-top: 1px solid rgba(234, 234, 237, 0.18)
+- Spacing: py: 17px
+
+Category Chips:
+- Background: rgba(234, 234, 237, 0.18)
+- Padding: 2px 8px
+- Border radius: 8px
+- Font: 16px Instrument Sans Medium
+- Wrap: flex-wrap
+
+Accessibility:
+- Section: role="region", aria-label="[Project Name] overview"
+- Button: Clear focus state, aria-label="View [Project] case study"

@@ -1,0 +1,66 @@
+# Wireframe: AboutSection (lg, default)
+# Traceability: R-014
+# Tokens: space-24, font-size-b1 (18px), font-size-b2 (16px), color-label-secondary
+# Notes: Light background, 12-column grid, auto-scrolling image carousel at bottom
+
++--------------------------------------------------------------------------------+
+| [Light Background: #fdfcfb or #ffffff]                                        |
+| [Grid: 12 columns, padding: 24px]                                            |
+| [Height: min 100vh]                                                           |
+|                                                                                |
+|  ┌─────────────────────────────────────────────────────────────────────────┐ |
+|  │ TOP SECTION [padding: 12px]                                              │ |
+|  │                                                                           │ |
+|  │  7+ years of experience in product and service        [ MENU  →]        │ |
+|  │  design. I worked in both big corporations and        [Black btn]        │ |
+|  │  small startups, always striving to turn complex                         │ |
+|  │  things into intuitive and thoughtful ones.                              │ |
+|  │  [28px/SemiBold/595px width]                                             │ |
+|  │                                                                           │ |
+|  │  Did 0→1 for a new player-card-based fantasy                             │ |
+|  │  system. Designed, tested, and shipped core UX...                        │ |
+|  │  [18px/Medium/583px width/60% opacity]                                   │ |
+|  │                                                                           │ |
+|  │  [64px gap between text blocks]                                          │ |
+|  └───────────────────────────────────────────────────────────────────────────┘ |
+|                                                                                |
+|  ┌─────────────────────────────────────────────────────────────────────────┐ |
+|  │ IMAGE CAROUSEL [See Carousel.lg.default.wire for details]               │ |
+|  │                                                                           │ |
+|  │  [Auto-scrolling horizontal carousel, 4-12 images]                       │ |
+|  │  [Height: ~600px, images with 4px radius]                                │ |
+|  │                                                                           │ |
+|  └───────────────────────────────────────────────────────────────────────────┘ |
+|                                                                                |
+|  ┌─────────────────────────────────────────────────────────────────────────┐ |
+|  │ BOTTOM SECTION [padding: 12px]                                           │ |
+|  │                                                                           │ |
+|  │  Colophon                          Thank You                             │ |
+|  │  [16px/60% opacity]                [16px/60% opacity]                    │ |
+|  │                                                                           │ |
+|  │  The font used on this site is     Thanks for visiting this              │ |
+|  │  our custom creation...            portfolio site...                     │ |
+|  │  [16px/Medium/477px width]         [16px/Medium/477px width]             │ |
+|  │                                                                           │ |
+|  │  [64px gap between columns]                                              │ |
+|  │                                                                           │ |
+|  │                               Twitter ↗  LinkedIn ↗                       │ |
+|  │                               E-Mail ↗   Resume ↓                         │ |
+|  │                               [16px/Medium/60%] [30px gap]                │ |
+|  └───────────────────────────────────────────────────────────────────────────┘ |
+|                                                                                |
++--------------------------------------------------------------------------------+
+
+Layout Structure:
+- Top: Two-column text (595px + 583px) with Menu button on right
+- Middle: Full-width image carousel
+- Bottom: Footer with Colophon/Thank You + Social links
+
+Grid Breakdown:
+- Top section: 12 columns
+- Colophon section: 6 columns each
+- Social links: Right-aligned
+
+Accessibility:
+- Section: role="contentinfo" or "region" with aria-label="About"
+- Social links: List with proper link text (not just icons)

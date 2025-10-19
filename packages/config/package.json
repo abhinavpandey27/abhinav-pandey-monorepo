@@ -1,0 +1,18 @@
+{
+  "name": "@portfolio/config",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "exports": {
+    "./eslint": "./eslint/index.cjs",
+    "./prettier": "./prettier/index.cjs",
+    "./tsconfig": "./typescript/base.tsconfig.json"
+  },
+  "scripts": {
+    "lint": "echo \"No lint step for config\"",
+    "build": "echo \"No build step for config\"",
+    "typecheck": "echo \"No typecheck step for config\""
+  },
+  "dependencies": {},
+  "devDependencies": {}
+}

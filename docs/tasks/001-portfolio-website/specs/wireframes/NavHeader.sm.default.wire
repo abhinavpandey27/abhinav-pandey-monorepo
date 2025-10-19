@@ -1,0 +1,46 @@
+# Wireframe: NavHeader (sm, default)
+# Traceability: R-002, R-015
+# Tokens: space-16, space-20, font-size-b3-mobile (14px), color-label-secondary
+# Notes: Mobile layout, height: 72px
+
++---------------------------------------+
+| [16px padding all sides]              |
+|                                       |
+| Abhinav Pandey      ☩ Work  [ MENU ] |
+| Now in Mumbai       ☩ About   [icon] |
+|                                       |
+| [14px/Medium]    [14px/Med]  [Black] |
+| [141px width]    [58px gap]  [pill]  |
+|                                       |
++---------------------------------------+
+
+Mobile Variations:
+- Navigation links compressed (no social links visible)
+- Menu button always visible (hamburger icon)
+- Social links + CV in menu drawer
+
+Menu Drawer (when Menu clicked):
++---------------------------------------+
+| [ ← Back ]                    [ X ]  |
+|                                       |
+| ☩ Work                                |
+| ☩ About                               |
+|                                       |
+| Links:                                |
+| Twitter ↗                             |
+| LinkedIn ↗                            |
+| E-Mail ↗                              |
+| Resume ↓                              |
+|                                       |
++---------------------------------------+
+
+Interaction:
+- Menu: Click → slide-in drawer from right
+- Drawer: Backdrop click or X → close
+- Links in drawer: Click → navigate + close drawer
+
+Accessibility:
+- Menu button: aria-label="Open navigation menu", aria-expanded="false"
+- Drawer: role="dialog", aria-modal="true"
+- Focus trap: Tab cycles within drawer when open
+- Escape: Close drawer

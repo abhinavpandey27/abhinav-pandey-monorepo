@@ -1,0 +1,33 @@
+# Wireframe: NavHeader (lg, default)
+# Traceability: R-002
+# Tokens: space-24, space-64, space-30, font-size-b2, color-label-secondary, radius-button
+# Notes: Sticky position, tab order: name → work → about → social links → menu
+
++--------------------------------------------------------------------------------+
+| [24px padding all sides]                                                       |
+|                                                                                |
+|  Abhinav Pandey          ☩ Work      Twitter ↗     LinkedIn ↗    [ MENU  →] |
+|  Now in Mumbai, India    ☩ About     E-Mail ↗      Resume ↓                  |
+|                                                                                |
+|  [64px gap]              [64px gap]  [30px gap]    [30px gap]     [Black btn]|
+|  [16px/Medium/#0b0c1199] [16px/Med]  [16px/Medium] [16px/Medium]  [14px/Mono]|
+|  [214px width]           [214px w]   [117px width] [117px width]  [pill/32px]|
+|                                                                                |
++--------------------------------------------------------------------------------+
+
+Interaction Notes:
+- Links: Click → smooth scroll to section (#work, #about)
+- Social: Click → new tab (rel="noopener noreferrer")
+- CV: Click → download PDF
+- Menu: Click → open menu modal/drawer (future enhancement)
+- Hover: Links show opacity: 1.0 transition (200ms)
+
+Accessibility:
+- Role: navigation
+- Skip to content: Hidden link before nav (visible on focus)
+- ARIA labels: Menu button needs aria-label="Open menu"
+- Focus visible: 2px outline on all links
+
+Responsive:
+- Fixed/sticky at top of viewport (z-index: var(--z-index-sticky))
+- Background: backdrop-blur + bg-white/60 when scrolled >50px

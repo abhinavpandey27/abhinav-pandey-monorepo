@@ -1,0 +1,40 @@
+# Wireframe: CaseStudyCard (lg, default)
+# Traceability: R-004
+# Tokens: radius-1 (24px), space-16, space-12, color-material-regular, color-separator-non-opaque
+# Notes: Desktop featured card, decorative only (no click action in v1), hover scale effect
+
++-------------------------------------------------------------+
+| [Card Container: 565px width, auto height]                 |
+| [Border: 0.5px solid rgba(11,12,17,0.18)]                  |
+| [Border radius: 24px]                                      |
+| [Background: #ffffff]                                      |
+| [Padding: 16px]                                            |
+|                                                             |
+|  ┌─────────────────────────────┬────────────┐             |
+|  │ STRIKER                      │            │             |
+|  │ [14px/Geist/uppercase/60%]  │   Image    │             |
+|  │                              │  [150x?]   │             |
+|  │ Designing for 0→1 of a new  │   [13px    │             |
+|  │ player-card-based fantasy    │  radius]   │             |
+|  │ system                       │            │             |
+|  │ [16px/Instrument/Medium]    │            │             |
+|  └─────────────────────────────┴────────────┘             |
+|                                                             |
++-------------------------------------------------------------+
+
+Layout:
+- Flex row, gap: 12px
+- Left container: 372px width, flex-col, gap: 8px
+- Right image: 150px width, self-stretch (match height)
+
+Hover State:
+- Transform: scale(1.02) with 300ms ease
+- Box shadow: 0 8px 24px rgba(11,12,17,0.16)
+
+Interaction:
+- No click action in v1 (purely decorative/informational)
+- Future: Will link to case study deep dive page
+
+Accessibility:
+- Role: article
+- No interactive elements (not focusable)

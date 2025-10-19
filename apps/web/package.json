@@ -1,0 +1,18 @@
+{
+  "name": "@portfolio/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "echo \"TODO: configure Next.js dev server\"",
+    "build": "echo \"TODO: configure Next.js build\"",
+    "start": "echo \"TODO: configure Next.js start\"",
+    "lint": "eslint \"app\" \"src\" --ext .js,.jsx,.ts,.tsx --max-warnings=0 --no-error-on-unmatched-pattern",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "format": "prettier --check \"**/*.{js,jsx,ts,tsx,json,md}\""
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@portfolio/config": "workspace:*"
+  }
+}

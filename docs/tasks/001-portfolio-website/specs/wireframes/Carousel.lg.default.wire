@@ -1,0 +1,42 @@
+# Wireframe: Carousel (lg, default)
+# Traceability: R-003, R-009
+# Tokens: space-24 (gap), radius-6 (4px), transition-base
+# Notes: Auto-scroll 4s interval, pause on hover, infinite loop
+
++--------------------------------------------------------------------------------+
+| [Horizontal scroll container, overflow: hidden]                               |
+|                                                                                |
+|  ┌─────────────┐   ┌─────────────┐   ┌─────────────┐   ┌─────────────┐      |
+|  │             │   │             │   │             │   │             │      |
+|  │   Image 1   │   │   Image 2   │   │   Image 3   │   │   Image 4   │  ... |
+|  │  [565x629]  │   │  [505x629]  │   │  [607x629]  │   │  [463x629]  │      |
+|  │             │   │             │   │             │   │             │      |
+|  └─────────────┘   └─────────────┘   └─────────────┘   └─────────────┘      |
+|                                                                                |
+|  [24px gap]        [24px gap]        [24px gap]                               |
+|  [4px radius on each image]                                                   |
+|                                                                                |
++--------------------------------------------------------------------------------+
+
+Auto-Scroll Behavior:
+- Initial delay: 1s after page load
+- Interval: 4s per slide
+- Animation: translateX with 500ms ease-in-out transition
+- Loop: After last image, smoothly reset to first (or duplicate set for seamless loop)
+
+Pause on Hover:
+- Mouse enter: clearInterval(autoScroll)
+- Mouse leave: resume after 1s delay
+
+Touch Gestures (Mobile):
+- Swipe left/right: navigate prev/next
+- Swipe velocity >0.5: skip to next slide
+- Snap to item center after release
+
+Accessibility:
+- Role: region, aria-label="Project image carousel"
+- ARIA live region: Announce "Slide X of Y" on change (polite)
+- Keyboard: Arrow keys navigate, Tab skips carousel (not focusable images)
+
+Reduced Motion:
+- prefers-reduced-motion: No auto-scroll, show manual prev/next buttons

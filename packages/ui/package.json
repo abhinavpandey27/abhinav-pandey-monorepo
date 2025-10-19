@@ -1,0 +1,17 @@
+{
+  "name": "@portfolio/ui",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "echo \"TODO: configure UI build\"",
+    "dev": "echo \"TODO: configure UI watch\"",
+    "lint": "eslint \"src\" --ext .js,.ts,.tsx --max-warnings=0 --no-error-on-unmatched-pattern",
+    "typecheck": "tsc --project tsconfig.json --noEmit",
+    "format": "prettier --check \"**/*.{js,ts,tsx,json,md}\""
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@portfolio/config": "workspace:*"
+  }
+}

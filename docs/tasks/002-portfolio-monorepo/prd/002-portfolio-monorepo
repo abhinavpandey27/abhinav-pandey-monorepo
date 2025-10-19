@@ -1,0 +1,321 @@
+# PRD-002: Portfolio Foundation & Experience
+**Version:** 2.0  
+**Date:** 2025-02-06  
+**Status:** Full PRD  
+**Author:** Codex (AI Development Assistant)  
+**Context Pack:** `/docs/tasks/001-portfolio-website/context-pack.md`
+---
+## 1. Overview
+### Problem Statement
+The designer needs a handcrafted, motion-rich portfolio that can be updated without touching code, served from cost-conscious infrastructure across a Next.js marketing front end and a Payload CMS backend.
+### Goal Summary
+Deliver a mono-repo that first gets the web app and CMS live on Vercel (Hobby) and Railway respectively, backed by Cloudflare R2 for assets, then layers in the interactive portfolio experience defined in Figma with reliable CMS-driven content.
+### Context Snapshot
+- **Hosting Architecture:** `apps/web` (Next.js 14) deployed to Vercel Hobby; `apps/cms` (Payload CMS) on Railway with managed PostgreSQL; Cloudflare R2 for media delivery; Vercel CDN for site assets.  
+- **Design Approach:** CSS Modules + design tokens (Instrument Sans, Geist Mono) derived from Figma; Framer Motion for scroll storytelling with reduced-motion accommodations.  
+- **Content Workflow:** Payload schema covers projects, optional case-study blocks, about singleton, and site configuration; single featured project and hex-based background tokens enforce storytelling sequencing.  
+- **Delivery Strategy:** Phase 1 targets deployable infrastructure (repo, environments, hosting configs, CMS bootstrapping, design token pipeline). Phase 2 implements portfolio UI, motion, SEO, and tests.  
+- **Sources:** `context-pack.md`, context brief (2025-02-06).
+---
+## 2. Objectives & Success Metrics
+| Objective | Success Metric | Target | Measurement |
+|-----------|----------------|--------|-------------|
+| **O1: Foundation Online** | Production-ready deployments for web + CMS | Both services live with healthy health checks | Manual verification; Vercel/Railway dashboards |
+| **O2: Performance & Quality** | Lighthouse performance score | ≥ 90 on desktop & mobile | Lighthouse CI / DevTools |
+| **O3: Content Autonomy** | Time to publish new project via CMS | ≤ 5 minutes end-to-end | Designer usability test |
+| **O4: Accessibility & Motion Hygiene** | WCAG 2.1 AA checks | No critical violations; reduced motion mode honored | axe DevTools, manual QA |
+| **O5: Interaction Smoothness** | Carousel/frame jank | < 100 ms input latency, 60 fps scroll | Performance profiling during QA |
+| **O6: Cost Efficiency** | Hosting spend | $0 within free tiers | Vercel/Railway/R2 billing dashboards |
+---
+## 3. Users & Scenarios
+### Primary User — Designer/Admin (CMS)
+- **Access:** Authenticated via OAuth (Google/GitHub) into Payload admin.
+- **Scenarios:**
+  1. Bootstrap initial content after deployments (site config, about, first project).  
+  2. Add or update project entries with hero imagery, metadata, and carousel images.  
+  3. Refresh CV/media assets uploaded to R2 through CMS interface.  
+  4. Adjust project order/background colors to curate scroll narrative.
+### Secondary User — Portfolio Visitor (Viewer)
+- **Access:** Public site on Vercel CDN.  
+- **Scenarios:**
+  1. Land on home page, experience auto-scrolling hero, and explore featured project.  
+  2. Scroll through full-height work sections with background transitions.  
+  3. Read about section, browse lifestyle carousel, download CV, and follow social links.  
+  4. Navigate using keyboard-only or reduced-motion preference.
+### Tertiary User — Developer/Maintainer
+- **Access:** Repo maintainer with CI/CD visibility.  
+- **Scenarios:**
+  1. Set up environment variables locally using templates.  
+  2. Trigger deployments (preview and production).  
+  3. Monitor telemetry and respond to regressions.  
+  4. Extend design tokens or component library in shared packages.
+---
+## 4. Scope
+### In-Scope Capabilities
+**Phase 1 — Foundation (Go-Live Readiness):**
+- Establish mono-repo structure with `apps/web`, `apps/cms`, `packages/ui`, `packages/config`.
+- Configure pnpm workspaces, TypeScript paths, lint/format shared config.
+- Prepare environment templates and secrets for Vercel and Railway.
+- Deploy Next.js site to Vercel (preview + production) with health/status page.
+- Deploy Payload CMS to Railway with PostgreSQL, configured R2 adapter, OAuth auth.
+- Wire shared media storage (R2) and delivery URLs, ensuring CORS compatibility.
+- Bootstrap Payload collections/globals, seed design tokens, seed placeholder project/content.
+- Document operational runbooks (deploy cadence, secret rotation, local dev story).
+**Phase 2 — Portfolio Experience:**
+- Implement landing hero, navigation, featured project card, work sections, about section per Figma.
+- Integrate Framer Motion scroll choreography with reduced-motion fallbacks.
+- Hook Next.js data fetching to Payload for projects/about/site config.
+- Implement SEO surface: meta tags, OpenGraph, structured data, sitemap, robots.
+- Add analytics/telemetry hooks and Playwright + Vitest coverage for key flows.
+- Provide admin toggles for project order and feature flags (e.g., case study takeover placeholder).
+### Non-Goals
+- Blog, news, or long-form content modules.
+- Case study deep-dive pages beyond placeholder CTA.
+- Multi-language/i18n support.
+- Authenticated viewer experiences or gated projects.
+- Custom analytics dashboards inside CMS.
+- Video transcoding/hosting (external embeds only).
+- Dark mode or advanced theming beyond CMS-stored background values.
+---
+## 5. Primary User Flows
+### Flow F1: Foundation Deployment (Developer)
+1. Developer clones repo; installs dependencies with `pnpm install`.  
+2. Runs bootstrap script to copy `.env.example` into app-specific env files.  
+3. Commits initial structure; pushes to GitHub; Vercel auto-builds preview.  
+4. Configures Vercel project with required secrets; promotes to production domain.  
+5. Configures Railway service with Docker image (Payload) and secrets (DB, R2, OAuth).  
+6. Confirms health checks for both services; records URLs in documentation.
+### Flow F2: CMS Bootstrap (Designer/Admin)
+1. Admin visits Railway-hosted `/admin`; authenticates via OAuth.  
+2. Completes first-time setup: creates SiteConfig, AboutSection, uploads CV.  
+3. Creates initial Project with hero, metadata, carousel images, background color, featured flag.  
+4. Publishes changes; verifies live site renders data within 2–3 minutes.  
+5. Adjusts ordering if necessary; logs initial content QA checklist.
+### Flow F3: Landing Experience (Viewer)
+1. Visitor lands on Vercel-hosted domain.  
+2. Navigation header anchors remain sticky; hero copy loads inside 2 seconds.  
+3. Auto-scrolling hero carousel cycles through highlighted frames; pauses on hover/touch.  
+4. Visitor clicks or scrolls to featured project; background transitions begin.
+### Flow F4: Work Section Exploration (Viewer)
+1. Visitor scrolls; IntersectionObserver sets active section threshold at 50%.  
+2. Background color transitions with easing; metadata grid and carousel animate in.  
+3. Visitor interacts with carousel (hover pause, swipe on mobile).  
+4. CTA leads to stub case-study overlay (until future deep-dive iteration).
+### Flow F5: Reduced Motion & Accessibility (Viewer)
+1. Visitor with `prefers-reduced-motion: reduce` loads site.  
+2. System disables auto-scroll animations; offers manual controls.  
+3. Keyboard navigation cycles through nav links, sections, and CTAs in logical order.  
+4. Screen reader announces section headings and CTA context.
+---
+## 6. Functional Requirements (ARS/EARS)
+### Foundation & Infrastructure
+- **R-001: Mono-repo Structure**  
+  **WHEN** the repository is initialized  
+  **THE SYSTEM SHALL** provide a mono-repo layout with `apps/web`, `apps/cms`, `packages/ui`, and `packages/config`, each containing starter README and build entry points.  
+  **Acceptance Criteria:**  
+  - [ ] `pnpm install` succeeds at workspace root.  
+  - [ ] Shared configs (ESLint, Prettier, TS) resolve via `packages/config`.  
+  - [ ] UI components compile in isolation using Storybook or equivalent script.  
+  **Source:** context-pack.md; context brief (2025-02-06).
+- **R-002: Environment Templates**  
+  **WHEN** a developer copies `.env.example` files  
+  **THE SYSTEM SHALL** generate environment files for web and CMS apps with clearly named variables for Vercel, Railway, R2, and OAuth providers.  
+  **Acceptance Criteria:**  
+  - [ ] `.env.example` lists keys for Vercel (NEXT_PUBLIC_BASE_URL, PAYLOAD_API_URL, etc.).  
+  - [ ] `.env.cms.example` lists Railway secrets (DATABASE_URL, R2 credentials, OAUTH_ID/SECRET).  
+  - [ ] Documentation explains where to set each secret in hosting dashboards.  
+  **Source:** context-pack.md (Dependencies, Tech Stack); context brief.
+- **R-003: Vercel Deployment Pipeline**  
+  **WHEN** code is pushed to `main` or a feature branch  
+  **THE SYSTEM SHALL** trigger Vercel builds that deploy preview environments and promote production on merges to `main`.  
+  **Acceptance Criteria:**  
+  - [ ] Vercel project connected to repo with preview URLs shared via PRs.  
+  - [ ] Production domain configured (`portfolio.vercel.app` placeholder).  
+  - [ ] Build logs surface Next.js warnings/errors prominently.  
+  **Source:** context-pack.md (Hosting, Deployment); context brief (foundation-first strategy).
+- **R-004: Railway CMS Deployment**  
+  **WHEN** Railway service is created from `apps/cms`  
+  **THE SYSTEM SHALL** deploy Payload CMS (Docker or Node build) with PostgreSQL, exposing `/admin` and `/api`.  
+  **Acceptance Criteria:**  
+  - [ ] Railway environment variables configured and persisted.  
+  - [ ] Health check endpoint returns 200.  
+  - [ ] Railway domain secured with TLS.  
+  - [ ] CMS responds to GET `/api/projects` with seeded data.  
+  **Source:** context-pack.md (CMS requirements); context brief (Technical Adjustments).
+- **R-005: Cloudflare R2 Integration**  
+  **WHEN** media is uploaded through Payload  
+  **THE SYSTEM SHALL** store assets in Cloudflare R2 and return public URLs consumable by Next.js Image component.  
+  **Acceptance Criteria:**  
+  - [ ] Payload storage adapter configured with R2 bucket, access key, secret.  
+  - [ ] Uploaded files accessible via HTTPS with correct CORS headers for Vercel domain.  
+  - [ ] Media deletion removes R2 objects.  
+  **Source:** context-pack.md (Data, Dependencies).
+- **R-006: OAuth Authentication**  
+  **WHEN** an admin accesses `/admin`  
+  **THE SYSTEM SHALL** require login via Google or GitHub OAuth, mapped to Payload admin roles.  
+  **Acceptance Criteria:**  
+  - [ ] OAuth callback URLs match Railway domain.  
+  - [ ] Successful login persists session across admin navigation.  
+  - [ ] Unauthorized users receive 403.  
+  **Source:** context-pack.md (Decisions B1/B3); context brief.
+- **R-007: Seed Content & Tokens**  
+  **WHEN** CMS bootstrapping script runs  
+  **THE SYSTEM SHALL** populate SiteConfig, AboutSection, and at least one Project using design token defaults.  
+  **Acceptance Criteria:**  
+  - [ ] Script idempotent; re-running updates existing entries.  
+  - [ ] Design tokens stored as globals align with Figma values.  
+  - [ ] Featured project flag enforced (only one).  
+  **Source:** context-pack.md (Data entities, Design system); context brief.
+### Portfolio Experience
+- **R-008: Landing Page Load**  
+  **WHEN** a visitor opens the root URL  
+  **THE SYSTEM SHALL** render hero headline, location, featured project card, and hero carousel within 2 seconds on 4G.  
+  **Acceptance Criteria:**  
+  - [ ] TTFB < 300 ms from Vercel logs.  
+  - [ ] Critical content above fold on 1920×1080 and 375×667 viewports.  
+  - [ ] Featured project data fetched from Payload published entries.  
+  **Source:** context-pack.md (Flows 1 & Objectives); design references.
+- **R-009: Navigation Header**  
+  **WHEN** the landing page renders  
+  **THE SYSTEM SHALL** present a sticky header with section anchors, location, social links, and CV download, responsive across breakpoints.  
+  **Acceptance Criteria:**  
+  - [ ] Smooth scroll triggered for in-page anchors with reduced-motion fallback.  
+  - [ ] External links open new tabs.  
+  - [ ] CV link downloads latest file from R2.  
+  **Source:** context-pack.md (Requirements R-002 in prior PRD); Figma NavHeader.
+- **R-010: Hero Carousel Motion**  
+  **WHEN** the carousel is visible  
+  **THE SYSTEM SHALL** auto-advance every 4 seconds, pause on hover/touch, and disable auto-play when reduced motion is requested.  
+  **Acceptance Criteria:**  
+  - [ ] Framer Motion or CSS transforms deliver 60 fps on desktop.  
+  - [ ] Swipe gestures supported on mobile.  
+  - [ ] Manual controls (next/prev) available for reduced motion users.  
+  **Source:** context-pack.md (Decisions B6, Accessibility assumptions).
+- **R-011: Work Section Presentation**  
+  **WHEN** a project section becomes active  
+  **THE SYSTEM SHALL** animate in header, metadata grid, and carousel while transitioning background color from previous section.  
+  **Acceptance Criteria:**  
+  - [ ] IntersectionObserver threshold 0.5 controls active state.  
+  - [ ] Background color matches CMS `backgroundColor` hex with validation.  
+  - [ ] Animations respect reduced-motion (instant or simplified).  
+  **Source:** context-pack.md (Flow 2, Data model).  
+- **R-012: Metadata & Carousel Content**  
+  **WHEN** project metadata is available  
+  **THE SYSTEM SHALL** present role, team, timeline, categories, outcomes, and carousel images per design system grid.  
+  **Acceptance Criteria:**  
+  - [ ] Category chips wrap with 8px radius and opacity tokens.  
+  - [ ] Carousel shows 3–4 images concurrently, lazy loads off-screen assets.  
+  - [ ] CTA button labeled "View Case Study" triggers overlay stub.  
+  **Source:** context-pack.md (Design system components, Flow 2).  
+- **R-013: About Section & CV**  
+  **WHEN** visitor reaches About section  
+  **THE SYSTEM SHALL** display bio rich text, lifestyle carousel, social icons, and CV download.  
+  **Acceptance Criteria:**  
+  - [ ] Carousel mirrors hero behavior (pause on hover, accessible controls).  
+  - [ ] Social icons have accessible labels.  
+  - [ ] CV download uses latest payload global media reference.  
+  **Source:** context-pack.md (Flow 4, Data model).  
+- **R-014: Reduced Motion & Accessibility**  
+  **WHEN** `prefers-reduced-motion: reduce` or keyboard navigation is detected  
+  **THE SYSTEM SHALL** disable auto-play animations, maintain focus order, and provide descriptive aria labels.  
+  **Acceptance Criteria:**  
+  - [ ] Axe audits show no critical issues.  
+  - [ ] Focus ring visible on interactive elements.  
+  - [ ] Screen readers announce section headings and CTA destinations.  
+  **Source:** context-pack.md (Accessibility objectives, Assumptions).  
+- **R-015: SEO & Metadata**  
+  **WHEN** pages render  
+  **THE SYSTEM SHALL** output meta tags, OpenGraph images, JSON-LD, sitemap, and robots.txt reflecting CMS content.  
+  **Acceptance Criteria:**  
+  - [ ] Sitemap updates on content publish.  
+  - [ ] OG images generated or referenced per project.  
+  - [ ] Robots.txt disallows admin routes.  
+  **Source:** context-pack.md (Objectives, Decision C9/C10).  
+- **R-016: Testing & Monitoring**  
+  **WHEN** code is merged  
+  **THE SYSTEM SHALL** run lint, typecheck, unit tests, Playwright smoke flows, and report telemetry (page view, section_view, cta_click).  
+  **Acceptance Criteria:**  
+  - [ ] CI blocks merges on failing tests.  
+  - [ ] Analytics events capture project slug, section order, motion preference.  
+  - [ ] Error monitoring (Vercel/ Railways logs) documented.  
+  **Source:** context-pack.md (Testing decisions, Risks).  
+---
+## 7. State & Data Model
+| Entity | Key Fields | Notes |
+|--------|------------|-------|
+| **Project** | `id`, `slug`, `title`, `subtitle`, `description`, `role`, `team`, `timeline`, `categories[]`, `outcomes[]`, `heroImage` (media), `backgroundColor`, `carouselImages[]`, `featured`, `order`, `status` | Background color hex validated; featured uniqueness enforced; `status` manages draft vs published visibility. |
+| **CaseStudy (future)** | `id`, `project` (relation), `contentBlocks[]` (polymorphic types: text, image, gallery, metrics, process) | Stored but not rendered in v1; supports future deep dives. |
+| **AboutSection** | `id`, `bio` (rich text), `imageCarousel[]` (media), `skills[]` (optional), `ctaLinks[]` | Singleton global. |
+| **SiteConfig** | `id`, `name`, `location`, `email`, `socialLinks[] {label,url}`, `cvFile` (media), `seo {title, description, keywords}` | Drives header and metadata. |
+| **DesignTokens** | CSS custom properties stored in shared package (`packages/ui`) and mirrored in CMS for theme overrides | Includes color palette, typography scale, spacing steps. |
+**State Transitions:**  
+- Project `status` -> `published` exposes entry to public API; `draft` hides from site.  
+- `order` integer controls scroll sequencing; reordering updates Vercel ISR or revalidate.  
+- `featured` checkbox triggers server-side guard to demote previous featured project.  
+- Media uploads create R2 objects; deletion triggers cleanup hook.
+**Privacy/PII:** Only email address in SiteConfig; ensure no sensitive personal data stored.
+---
+## 8. Non-Functional Requirements
+- **Performance:** LCP < 2.0s, CLS < 0.1, TBT < 200ms on 4G; carousels maintain 60 fps; caching headers tuned in Vercel.  
+- **Availability:** Web front end >= 99.5% (Vercel SLA), CMS >= 99% (Railway free tier); document maintenance windows.  
+- **Security:** Enforce HTTPS; rotate secrets quarterly; restrict CMS admin to OAuth allowlist; sanitize rich text.  
+- **Accessibility:** WCAG 2.1 AA compliance verified via automated and manual audits.  
+- **Scalability:** Support at least 20 projects with 10 images each without performance degradation; R2 bucket configured for growth.  
+- **Maintainability:** Shared configs centralized; storybook or component docs required for UI contributions; commit hooks enforce lint.  
+- **Observability:** Logging via Vercel/Next telemetry, Railway logs; analytics events to chosen provider (e.g., PostHog or Plausible).  
+- **Cost:** Remain within Vercel Hobby, Railway free tier (monthly runtime hours), and Cloudflare R2 free allowances; monitor usage.
+---
+## 9. Constraints & Dependencies
+- **Hosting:** Vercel Hobby limits (100 GB bandwidth, serverless execution limits); Railway free tier (runtime hours, sleep policy).  
+- **Database:** PostgreSQL (Railway) required; Payload adapters must use Postgres driver rather than Cloudflare D1 from prior attempt.  
+- **Storage:** Cloudflare R2 requires public bucket or signed URLs; ensure Next.js image loader configuration includes domain.  
+- **Tooling:** Node 18+, pnpm workspace compatibility, Framer Motion 11+, Payload 2+.  
+- **Integrations:** Google and GitHub OAuth credentials with correct callback domains; analytics provider credentials.  
+- **Content:** High-resolution imagery optimized and compressed to meet performance metrics.  
+- **Team:** Designer availability for QA of initial content and motion behavior.
+---
+## 10. Design References
+- Figma — Home Desktop: `https://www.figma.com/design/AzVxiCyRgc3uVWW9IaxkSk/Folio-Website?node-id=36-8459`  
+- Figma — Home Mobile: `https://www.figma.com/design/AzVxiCyRgc3uVWW9IaxkSk/Folio-Website?node-id=36-8787`  
+- Figma — Components Library: `node-id=42-8879`  
+- Figma — Colors: `node-id=3-19700`; Typography: `node-id=3-18936`  
+- Existing spec artifacts in `/docs/tasks/001-portfolio-website/specs/` (reference only; superseded by this PRD where conflicts exist).
+---
+## 11. Instrumentation & Telemetry
+- **Events:**  
+  - `page_view` (properties: path, device, motionPreference)  
+  - `section_view` (projectSlug, sectionIndex, backgroundColor)  
+  - `cta_click` (type: cv_download | social_link | view_case_study, projectSlug)  
+  - `carousel_interaction` (carouselId, action: hoverPause | swipe | buttonNav)
+- **Dashboards:** Weekly overview of section engagement, CV downloads, social link clicks.  
+- **Alerts:** Slack/email alert if build fails, CMS health check fails, or Lighthouse score dips below target.
+---
+## 12. Rollout & Risk Mitigation
+- **Phase Gate 1 — Foundation Complete:**  
+  - All infrastructure requirements (R-001 → R-007) pass QA.  
+  - CMS seeded with baseline content; web deploy stable on production domain.  
+  - Rollback plan: maintain previous static placeholder site if needed.
+- **Phase Gate 2 — Experience Launch:**  
+  - Portfolio requirements (R-008 → R-016) validated via automated + manual testing.  
+  - Accessibility and performance audits meet targets.  
+  - Content QA sign-off from designer prior to public announcement.
+- **Risk Mitigations:**  
+  - **Carousel performance:** leverage GPU-accelerated transforms, limit image sizes.  
+  - **Railway sleep cycles:** configure uptime pings or move to paid plan if reliability suffers.  
+  - **Free tier limits:** monitor bandwidth/storage monthly; prepare migration guide.  
+  - **Content regressions:** enable draft/publish workflow with preview mode before shipping updates.
+---
+## 13. Open Questions
+1. **CMS Hosting Plan:** Will Railway free tier suffice, or should we budget for a paid plan to avoid sleep downtime?  
+2. **Analytics Provider:** Confirm whether to use Vercel Analytics, Plausible, PostHog, or another tool for event tracking.  
+3. **Domain Strategy:** Do we need a custom domain (e.g., `folio.abhinavpandey.com`) at launch, and who manages DNS?  
+4. **Case Study Overlay Scope:** Should the initial CTA open a simple modal with summary content or just stub copy until deep-dive phase?  
+5. **Design Token Overrides:** Will CMS editors adjust theme per project beyond background colors (e.g., typography weights)?
+---
+## 14. References
+- `docs/tasks/001-portfolio-website/context-pack.md`  
+- Context brief summary (2025-02-06 conversation)  
+- Figma design links (see §10)  
+- Prior specs in `docs/tasks/001-portfolio-website/specs/` for historical traceability
+---
+Ready to generate the spec from this PRD? Reply **“Go”** to proceed.
