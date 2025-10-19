@@ -71,4 +71,4 @@ jobs:
           vercel-org-id: ${{ secrets.VERCEL_ORG_ID }}
           vercel-project-id: prj_Zri43V05oTwY6CJ1Wdb89lQyJwmL
           working-directory: apps/web
-          vercel-args: "--prod"
+          vercel-args: "--prod --confirm"
